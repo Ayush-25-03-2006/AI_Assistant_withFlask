@@ -1,13 +1,22 @@
 from flask import Flask, render_template, request, jsonify
 import os
-from dotenv import load_dotenv
 from groq import Groq
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-load_dotenv()
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
+)
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+api_key = os.getenv("GROQ_API_KEY")
+
+if not api_key:
+    raise Exception("GROQ_API_KEY is not configured in Vercel")
+
+client = Groq(api_key=api_key)
+
 
 @app.route("/")
 def hello_world():
@@ -17,6 +26,9 @@ def hello_world():
 @app.route("/ask", methods=["POST"])
 def ask():
     question = request.form.get("question")
+
+    if not question:
+        return jsonify({"error": "Question is required"}), 400
 
     response = client.chat.completions.create(
         model="openai/gpt-oss-20b",
@@ -28,13 +40,13 @@ def ask():
             {
                 "role": "user",
                 "content": question
-            } # type: ignore
+            }
         ],
         temperature=0.7,
         max_tokens=512
     )
 
-    answer = response.choices[0].message.content.strip() # type: ignore
+    answer = response.choices[0].message.content
 
     return jsonify({"response": answer}), 200
 
@@ -42,6 +54,9 @@ def ask():
 @app.route("/summarize", methods=["POST"])
 def summarize():
     email_text = request.form.get("email")
+
+    if not email_text:
+        return jsonify({"error": "Email text is required"}), 400
 
     prompt = f"""
     Summarize the following in 2-3 sentences:
@@ -65,23 +80,6 @@ def summarize():
         max_tokens=512
     )
 
-    summary = response.choices[0].message.content.strip() # type: ignore
+    summary = response.choices[0].message.content
 
     return jsonify({"response": summary}), 200
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-# from groq import Groq
-# import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
-# models = client.models.list()
-
-# for model in models.data:
-#     print(model.id)
