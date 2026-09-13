@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
+import re
 from groq import Groq
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +18,12 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 
+def clean_text(text):
+    text = re.sub(r'\*\*', '', text)
+    text = re.sub(r'\*', '', text)
+    text = re.sub(r'^\s*[-#]\s+', '', text, flags=re.MULTILINE)
+    return text.strip()
+
 @app.route("/")
 def hello_world():
     return render_template("index.html")
@@ -33,7 +40,7 @@ def ask():
         messages=[
             {
                 "role": "system",
-                "content": "Act like a helpful personal assistant"
+                "content": "Act like a helpful personal assistant. Respond in plain text without Markdown symbols, asterisks, hashtags, or bullet points."
             },
             {
                 "role": "user",
@@ -45,6 +52,7 @@ def ask():
     )
 
     answer = response.choices[0].message.content
+    answer = clean_text(answer)
 
     return jsonify({"response": answer}), 200
 
@@ -66,7 +74,7 @@ def summarize():
         messages=[
             {
                 "role": "system",
-                "content": "Act like an expert summarizer assistant that can be understood by all"
+                "content": "Act like an expert summarizer assistant. Respond only in plain text without Markdown symbols, asterisks, hashtags, or bullet points."
             },
             {
                 "role": "user",
@@ -78,5 +86,6 @@ def summarize():
     )
 
     summary = response.choices[0].message.content
+    summary = clean_text(summary)
 
     return jsonify({"response": summary}), 200
