@@ -1,72 +1,337 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Personal Assistant</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<title>Chakravyu AI</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
 </head>
+
 <body>
-    <h1 class="main-heading">AI Personal Assistant</h1>
 
-    <div class="container">
+<!-- Background -->
+<div class="background-glow glow-one"></div>
+<div class="background-glow glow-two"></div>
 
-        <h2>Ask Anything</h2>
-        <form id="askForm">
-            <input type="text" name="question" placeholder="Ask anything..." required>
-            <button type="submit">Ask</button>
-        </form>
-        <p id="ans-loading" style="display: none;">Processing...</p>
-        <p id="answer"></p>
+<!-- Navigation -->
+<nav class="navbar">
 
-        <hr>
+    <div class="brand">
+        <div class="brand-icon">
+            <span>cv</span>
+        </div>
 
-        <h2>Summarize Email</h2>
-        <form id="emailForm">
-            <textarea type="text" name="email" placeholder="Paste your email here.." required></textarea>
-            <button type="submit">Summarize</button>
-        </form>
-        <p id="summary-loading" style="display: none;">Processing...</p>
-        <p id="summary"></p>
-
+        <div>
+            <h1>CHAKRAVYU</h1>
+            <p>AI ASSISTANT</p>
+        </div>
     </div>
 
+    <div class="status">
+        <span class="status-dot"></span>
+    </div>
+
+</nav>
+
+
+<!-- Main -->
+<main class="main-container">
+
+    <!-- Hero -->
+    <section class="hero">
+
+        <div class="ai-orb">
+            <div class="orb-core">cv</div>
+        </div>
+
+        <p class="eyebrow">INTELLIGENT • FAST • POWERFUL</p>
+
+        <h2>
+            Welcome to
+            <span>Chakravyu AI</span>
+        </h2>
+
+        <p class="hero-description">
+            Your intelligent personal assistant for questions,
+            ideas, information and productivity.
+        </p>
+
+    </section>
+
+
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+
+        <button onclick="setQuestion('Explain artificial intelligence in simple words')">
+            <span>◈</span>
+            Explain AI
+        </button>
+
+        <button onclick="setQuestion('Give me 5 project ideas for a computer science student')">
+            <span>⌘</span>
+            Project Ideas
+        </button>
+
+        <button onclick="setQuestion('Help me prepare for a technical interview')">
+            <span>◇</span>
+            Interview Prep
+        </button>
+
+        <button onclick="setQuestion('Write a professional email for me')">
+            <span>✉</span>
+            Write Email
+        </button>
+
+    </section>
+
+
+    <!-- Ask AI -->
+    <section class="ai-card">
+
+        <div class="card-header">
+
+            <div>
+                <span class="card-label">ASK CHAKRAVYU</span>
+                <h3>What can I help you with?</h3>
+            </div>
+
+            <div class="ai-badge">
+                CV
+            </div>
+
+        </div>
+
+
+        <form id="askForm">
+
+            <div class="input-wrapper">
+
+                <textarea
+                    name="question"
+                    id="question"
+                    placeholder="Ask anything..."
+                    required></textarea>
+
+                <button type="submit" class="send-button">
+                    <span>➜</span>
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <!-- Loading -->
+        <div id="ans-loading" class="loading" style="display:none;">
+            <div class="loader"></div>
+            <span>Chakravyu is thinking...</span>
+        </div>
+
+
+        <!-- Response -->
+        <div id="answer-container" class="response-box" style="display:none;">
+
+            <div class="response-title">
+                <div class="mini-orb">✦</div>
+                <span>CHAKRAVYU</span>
+            </div>
+
+            <p id="answer"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Summarizer -->
+    <section class="ai-card summarizer">
+
+        <div class="card-header">
+
+            <div>
+                <span class="card-label">SMART SUMMARIZER</span>
+                <h3>Turn long text into clear insights.</h3>
+            </div>
+
+            <div class="summary-icon">
+                ≡
+            </div>
+
+        </div>
+
+
+        <form id="emailForm">
+
+            <textarea
+                name="email"
+                placeholder="Paste your email or text here..."
+                required></textarea>
+
+            <button type="submit" class="primary-button">
+                <span>✦</span>
+                Summarize Text
+            </button>
+
+        </form>
+
+
+        <!-- Loading -->
+        <div id="summary-loading" class="loading" style="display:none;">
+            <div class="loader"></div>
+            <span>Creating your summary...</span>
+        </div>
+
+
+        <!-- Summary -->
+        <div id="summary-container" class="response-box" style="display:none;">
+
+            <div class="response-title">
+                <div class="mini-orb">✦</div>
+                <span>SUMMARY</span>
+            </div>
+
+            <p id="summary"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            CHAKRAVYU AI
+        </p>
+
+    </footer>
+
+</main>
+
 <script>
+
+    function setQuestion(text) {
+
+        document.getElementById("question").value = text;
+
+        document.getElementById("question").focus();
+
+    }
+
     document.getElementById("askForm").onsubmit = async (e) => {
+
         e.preventDefault();
-        let formData = new FormData(e.target);
+
+        let form = e.target;
+        let formData = new FormData(form);
 
         let loading = document.getElementById("ans-loading");
-        loading.style.display = "block";   // show loader
+        let responseBox = document.getElementById("answer-container");
+        let answer = document.getElementById("answer");
 
-        let res = await fetch("/ask", {
-            method: "POST",
-            body: formData
-        });
+        loading.style.display = "flex";
+        responseBox.style.display = "none";
 
-        let data = await res.json();
-        document.getElementById("answer").innerText = data.response;
+        try {
 
-        loading.style.display = "none";   // hide loader
+            let res = await fetch("/ask", {
+                method: "POST",
+                body: formData
+            });
+
+            let data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Something went wrong");
+            }
+
+            answer.innerText = data.response;
+
+            responseBox.style.display = "block";
+
+        } catch (error) {
+
+            answer.innerText =
+                "Sorry, something went wrong. Please try again.";
+
+            responseBox.style.display = "block";
+
+            console.error(error);
+
+        }
+
+        loading.style.display = "none";
+
     };
 
-document.getElementById("emailForm").onsubmit = async (e) => {
-    e.preventDefault();
-    let formData = new FormData(e.target);
+    document.getElementById("emailForm").onsubmit = async (e) => {
 
-    let loading = document.getElementById("summary-loading");
-    loading.style.display = "block";
+        e.preventDefault();
 
-    let res = await fetch("/summarize", {
-        method: "POST",
-        body: formData
+        let form = e.target;
+        let formData = new FormData(form);
+
+        let loading = document.getElementById("summary-loading");
+        let responseBox = document.getElementById("summary-container");
+        let summary = document.getElementById("summary");
+
+        loading.style.display = "flex";
+        responseBox.style.display = "none";
+
+        try {
+
+            let res = await fetch("/summarize", {
+                method: "POST",
+                body: formData
+            });
+
+            let data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Something went wrong");
+            }
+
+            summary.innerText = data.response;
+
+            responseBox.style.display = "block";
+
+        } catch (error) {
+
+            summary.innerText =
+                "Unable to summarize the text. Please try again.";
+
+            responseBox.style.display = "block";
+
+            console.error(error);
+
+        }
+
+        loading.style.display = "none";
+
+    };
+
+    document.getElementById("question").addEventListener("keydown", function(e) {
+
+        if (e.key === "Enter" && !e.shiftKey) {
+
+            e.preventDefault();
+
+            document.getElementById("askForm").requestSubmit();
+
+        }
+
     });
-
-    let data = await res.json();
-    document.getElementById("summary").innerText = data.response;
-
-    loading.style.display = "none";   // hide loader
-};
 
 </script>
 
