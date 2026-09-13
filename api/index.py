@@ -7,10 +7,7 @@ app = Flask(__name__)
 
 load_dotenv()
 
-api_key = os.getenv("GROQ_API_KEY")
-
-client = Groq(api_key=api_key)
-
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 @app.route("/")
 def hello_world():
