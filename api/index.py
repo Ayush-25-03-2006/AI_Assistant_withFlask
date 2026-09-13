@@ -17,11 +17,9 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 
-
 @app.route("/")
 def hello_world():
     return render_template("index.html")
-
 
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -49,7 +47,6 @@ def ask():
     answer = response.choices[0].message.content
 
     return jsonify({"response": answer}), 200
-
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
