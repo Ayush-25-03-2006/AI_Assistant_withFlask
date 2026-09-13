@@ -31,13 +31,13 @@ def ask():
             {
                 "role": "user",
                 "content": question
-            }
+            } # type: ignore
         ],
         temperature=0.7,
         max_tokens=512
     )
 
-    answer = response.choices[0].message.content.strip()
+    answer = response.choices[0].message.content.strip() # type: ignore
 
     return jsonify({"response": answer}), 200
 
@@ -68,7 +68,7 @@ def summarize():
         max_tokens=512
     )
 
-    summary = response.choices[0].message.content.strip()
+    summary = response.choices[0].message.content.strip() # type: ignore
 
     return jsonify({"response": summary}), 200
 
